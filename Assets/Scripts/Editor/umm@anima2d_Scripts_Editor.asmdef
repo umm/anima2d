@@ -1,0 +1,12 @@
+{
+    "name": "umm@anima2d_Scripts_Editor",
+    "references": [
+        "umm@anima2d"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
