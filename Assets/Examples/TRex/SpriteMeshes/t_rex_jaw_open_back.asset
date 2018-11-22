@@ -217,13 +217,6 @@ MonoBehaviour:
   m_ApiVersion: 4
   m_Sprite: {fileID: 21300006, guid: 726d2784a87b044f182b7487b3b8ebb8, type: 3}
   m_SharedMesh: {fileID: 4305520}
-  pivotPoint: {x: 0, y: 0}
-  texVertices: []
-  edges: []
-  holes: []
-  indices: 
-  bindPoses: []
-  m_SharedMaterials: []
 --- !u!114 &11474344
 MonoBehaviour:
   m_ObjectHideFlags: 1
