@@ -2,6 +2,7 @@
 using UnityEditor;
 using System;
 using System.Collections;
+using System.Linq;
 using System.Reflection;
 
 namespace Anima2D
@@ -57,7 +58,7 @@ namespace Anima2D
 			m_FrameToTimeMethod = m_AnimationWindowStateType.GetMethod("FrameToTime",BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 			m_TimeToFrameMethod = m_AnimationWindowStateType.GetMethod("TimeToFrame",BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 			m_TimeMethod = m_AnimationKeyTimeType.GetMethod("Time",BindingFlags.Public | BindingFlags.Static);
-			m_CreateDefaultCurvesMethod = m_AnimationWindowUtilityType.GetMethod("CreateDefaultCurves",BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+			m_CreateDefaultCurvesMethod = m_AnimationWindowUtilityType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static).First(x => x.Name == "CreateDefaultCurves");
 
 			Type[] l_AddKeyframeToCurveTypes = { m_AnimationWindowStateType, m_AnimationWindowCurveType, m_AnimationKeyTimeType };
 			m_AddKeyframeToCurveMethod = m_AnimationWindowUtilityType.GetMethod("AddKeyframeToCurve",BindingFlags.Public | BindingFlags.Static, null, l_AddKeyframeToCurveTypes, null);
@@ -72,12 +73,12 @@ namespace Anima2D
 				if(m_GetAllAnimationWindows != null)
 				{
 					var list = m_GetAllAnimationWindows.Invoke(null, null);
-					int numElements = (int)list.GetType().GetProperty("Count").GetValue(list, null);  
- 
+					int numElements = (int)list.GetType().GetProperty("Count").GetValue(list, null);
+
 					if(numElements > 0)
 					{
-						object[] index = { 0 };  
-                        return list.GetType().GetProperty("Item").GetValue(list, index) as EditorWindow;  
+						object[] index = { 0 };
+                        return list.GetType().GetProperty("Item").GetValue(list, index) as EditorWindow;
 					}
 				}
 
@@ -94,7 +95,7 @@ namespace Anima2D
 				return null;
 			}
 		}
-		
+
 		protected object state {
 			get {
 				if(animEditor && m_StateField != null)
@@ -103,19 +104,19 @@ namespace Anima2D
 				}
 				return null;
 			}
-			
+
 		}
-		
+
 		public virtual int frame {
 			get {
 				if(state != null && m_FrameProperty != null)
 				{
 					return (int)m_FrameProperty.GetValue(state,null);
 				}
-				
+
 				return 0;
 			}
-			
+
 			set {
 				if(state != null && m_FrameProperty != null)
 				{
@@ -130,10 +131,10 @@ namespace Anima2D
 				{
 					return (bool)m_RecordingProperty.GetValue(state,null);
 				}
-				
+
 				return false;
 			}
-			
+
 			set {
 				if(state != null && m_RecordingProperty != null)
 				{
@@ -141,7 +142,7 @@ namespace Anima2D
 				}
 			}
 		}
-		
+
 		public AnimationClip activeAnimationClip {
 			get {
 				if(state != null && m_ActiveAnimationClipProperty != null)
@@ -151,29 +152,29 @@ namespace Anima2D
 				return null;
 			}
 		}
-		
+
 		public GameObject activeGameObject {
 			get {
 				if(state != null && m_ActiveGameObjectProperty != null)
 				{
 					return (GameObject)m_ActiveGameObjectProperty.GetValue(state,null);
 				}
-				
+
 				return null;
 			}
 		}
-		
+
 		public GameObject rootGameObject {
 			get {
 				if(state != null && m_ActiveRootGameObjectProperty != null)
 				{
 					return (GameObject)m_ActiveRootGameObjectProperty.GetValue(state,null);
 				}
-				
+
 				return null;
 			}
 		}
-		
+
 		public int refresh {
 			get {
 				if(state != null && m_RefreshProperty != null)
@@ -183,7 +184,7 @@ namespace Anima2D
 				return 0;
 			}
 		}
-		
+
 		public float currentTime {
 			get {
 				if(state != null && m_CurrentTimeProperty != null)
@@ -193,7 +194,7 @@ namespace Anima2D
 				return 0f;
 			}
 		}
-		
+
 		public bool playing {
 			get {
 				if(state != null && m_PlayingProperty != null)
@@ -213,7 +214,7 @@ namespace Anima2D
 			}
 			return 0f;
 		}
-		
+
 		public float TimeToFrame(float time)
 		{
 			if(state != null && m_TimeToFrameMethod != null)
@@ -232,15 +233,15 @@ namespace Anima2D
 				m_CreateDefaultCurvesMethod.Invoke(null,parameters);
 			}
 		}
-		
+
 		public virtual void AddKey(EditorCurveBinding binding, float time)
 		{
 			IList l_curves = GetAllCurves();
-			
+
 			if(l_curves != null)
 			{
 				object l_animationWindowCurve = GetCurve(binding);
-				
+
 				if(m_AddKeyframeToCurveMethod != null && l_animationWindowCurve != null)
 				{
 					object[] parameters = { state, l_animationWindowCurve, AnimationKeyTime(time, activeAnimationClip.frameRate) };
@@ -287,7 +288,7 @@ namespace Anima2D
 
 			return null;
 		}
-		
+
 		protected void SaveCurve(object _curve)
 		{
 			if(state != null &&m_SaveCurveMethod != null)
@@ -300,7 +301,7 @@ namespace Anima2D
 		protected virtual IList GetAllCurves()
 		{
 			if(state != null)
-			{ 
+			{
 				return m_AllCurvesCacheField.GetValue( state ) as IList;
 			}
 
