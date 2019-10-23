@@ -42,7 +42,7 @@ namespace Anima2D
 				get {
 					if(!mShowBonesImage)
 					{
-						mShowBonesImage = EditorGUIUtility.Load("Anima2D/showBonesIcon.png") as Texture2D;
+						mShowBonesImage = Resources.Load<Texture2D>("showBonesIcon");
 						mShowBonesImage.hideFlags = HideFlags.DontSave;
 					}
 					
